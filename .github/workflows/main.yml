@@ -1,7 +1,7 @@
 name: Deploy Snake Game
 on:
   push:
-    branches: ["main"] # 如果你的分支叫 master，请把 main 改成 master
+    branches: ["main"]
 permissions:
   contents: read
   pages: write
