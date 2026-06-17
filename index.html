@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> JJ snake game</title>
+    <title>JJ snake game </title>
     <style>
         body {
-            background-color: #222;
+            background-color: #2e3d52;
             color: white;
             text-align: center;
             font-family: Arial, sans-serif;
@@ -20,9 +20,10 @@
             box-sizing: border-box;
         }
         canvas {
-            background-color: #000;
-            border: 4px solid #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            background-color: #a3d16b; /* 换成好看的草地绿背景 */
+            border: 6px solid #4a6722;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             max-width: 90vw;
             max-height: 50vh;
         }
@@ -37,15 +38,17 @@
         button {
             width: 80px;
             height: 80px;
-            font-size: 28px;
-            background-color: #444;
+            font-size: 32px;
+            background-color: #5c7599;
             color: white;
-            border: 2px solid #666;
-            border-radius: 15px;
-            active-background-color: #666;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 4px #3d516d;
         }
         button:active {
-            background-color: #888;
+            background-color: #4c6282;
+            box-shadow: 0 2px #3d516d;
+            transform: translateY(2px);
         }
         .up { grid-column: 2; grid-row: 1; }
         .left { grid-column: 1; grid-row: 2; }
@@ -55,31 +58,29 @@
 </head>
 <body>
 
-    <h2>JJsnake game</h2>
+    <h2>JJ snake game  🍎</h2>
     <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <div class="controls">
-        <button class="up" onclick="changeDirection('UP')">↑</button>
-        <button class="left" onclick="changeDirection('LEFT')">←</button>
-        <button class="down" onclick="changeDirection('DOWN')">↓</button>
-        <button class="right" onclick="changeDirection('RIGHT')">→</button>
+        <button class="up" onclick="changeDirection('UP')">▲</button>
+        <button class="left" onclick="changeDirection('LEFT')">◀</button>
+        <button class="down" onclick="changeDirection('DOWN')">▼</button>
+        <button class="right" onclick="changeDirection('RIGHT')">▶</button>
     </div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
 
-        const box = 20;
-        let snake = [{ x: 10 * box, y: 10 * box }];
+        const box = 25; // 稍微放大一点方块，让卡通更好看
+        let snake = [{ x: 8 * box, y: 8 * box }];
         let d = "RIGHT";
 
-        // 随机生成食物
         let food = {
-            x: Math.floor(Math.random() * 20) * box,
-            y: Math.floor(Math.random() * 20) * box
+            x: Math.floor(Math.random() * 16) * box,
+            y: Math.floor(Math.random() * 16) * box
         };
 
-        // 按钮控制方向
         function changeDirection(dir) {
             if (dir === "LEFT" && d !== "RIGHT") d = "LEFT";
             if (dir === "UP" && d !== "DOWN") d = "UP";
@@ -87,25 +88,40 @@
             if (dir === "DOWN" && d !== "UP") d = "DOWN";
         }
 
-        // 游戏主循环
         function draw() {
-            // 1. 刷黑画布
-            ctx.fillStyle = "black";
+            // 1. 画出网格草地背景
+            ctx.fillStyle = "#a3d16b";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            🐸", snake[i].x + box/2, snake[i].y + box/2
-            for (let i = 0; i < snake.length; i++) {
-                ctx.fillStyle = "lime";
-                ctx.fillRect("🐢", snake[i].x + box/2, snake[i].y + box/2);
-                ctx.strokeStyle = "black";
-                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            
+            // 加点草地深浅交替的效果
+            ctx.fillStyle = "#9cc964";
+            for(let r=0; r<canvas.width/box; r++) {
+                for(let c=0; c<canvas.height/box; c++) {
+                    if((r+c)%2===0) ctx.fillRect(r*box, c*box, box, box);
+                }
             }
 
-            // 3. 画出红色的食物
-            ctx.fillStyle = "red";
-            ctx.fillRect(“🍓”,food.x, food.y, box, box);
+            // 2. 画卡通蛇
+            for (let i = 0; i < snake.length; i++) {
+                ctx.font = box + "px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                
+                if (i === 0) {
+                    // 蛇头画个呆萌的青蛙或蛇头
+                    ctx.fillText("🐸", snake[i].x + box/2, snake[i].y + box/2);
+                } else {
+                    // 蛇身画绿色小乌龟壳或者小圆圈
+                    ctx.fillText("🐢", snake[i].x + box/2, snake[i].y + box/2);
+                }
+            }
 
-            // 4. 蛇头移动走位
+            // 3. 画卡通红苹果
+            ctx.font = box + "px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("🍎", food.x + box/2, food.y + box/2);
+
             let snakeX = snake[0].x;
             let snakeY = snake[0].y;
 
@@ -114,7 +130,7 @@
             if (d === "RIGHT") snakeX += box;
             if (d === "DOWN") snakeY += box;
 
-            // 5. 穿墙处理（免得一撞墙就死，方便iPad测试）
+            // 穿墙
             if (snakeX < 0) snakeX = canvas.width - box;
             if (snakeX >= canvas.width) snakeX = 0;
             if (snakeY < 0) snakeY = canvas.height - box;
@@ -122,21 +138,19 @@
 
             let newHead = { x: snakeX, y: snakeY };
 
-            // 6. 判断是否吃到食物
             if (snakeX === food.x && snakeY === food.y) {
                 food = {
-                    x: Math.floor(Math.random() * 20) * box,
-                    y: Math.floor(Math.random() * 20) * box
+                    x: Math.floor(Math.random() * 16) * box,
+                    y: Math.floor(Math.random() * 16) * box
                 };
             } else {
-                snake.pop(); // 没吃到食物就减去尾巴
+                snake.pop();
             }
 
             snake.unshift(newHead);
         }
 
-        // 每 150 毫秒刷新一次画面（控制蛇的速度）
-        setInterval(draw, 150);
+        setInterval(draw, 180); // 稍微减慢一点速度，玩起来更舒服
     </script>
 </body>
 </html>
