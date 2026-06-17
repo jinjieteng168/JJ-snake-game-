@@ -112,7 +112,7 @@
                     ctx.fillText("🐸", snake[i].x + box/2, snake[i].y + box/2);
                 } else {
                     // 蛇身画绿色小乌龟壳或者小圆圈
-                    ctx.fillText("🐢", snake[i].x + box/2, snake[i].y + box/2);
+                    ctx.fillText("💚", snake[i].x + box/2, snake[i].y + box/2);
                 }
             }
 
@@ -120,7 +120,7 @@
             ctx.font = box + "px Arial";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("🍎", food.x + box/2, food.y + box/2);
+            ctx.fillText("🍓", food.x + box/2, food.y + box/2);
 
             let snakeX = snake[0].x;
             let snakeY = snake[0].y;
@@ -150,7 +150,7 @@
             snake.unshift(newHead);
         }
 
-        setInterval(draw, 180); // 稍微减慢一点速度，玩起来更舒服
+        setInterval(draw, 230); // 稍微减慢一点速度，玩起来更舒服
     </script>
 </body>
 </html>
