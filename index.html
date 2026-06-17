@@ -93,17 +93,17 @@
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // 2. 画出绿色的蛇
+            🐸", snake[i].x + box/2, snake[i].y + box/2
             for (let i = 0; i < snake.length; i++) {
                 ctx.fillStyle = "lime";
-                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                ctx.fillRect("🐢", snake[i].x + box/2, snake[i].y + box/2);
                 ctx.strokeStyle = "black";
                 ctx.strokeRect(snake[i].x, snake[i].y, box, box);
             }
 
             // 3. 画出红色的食物
             ctx.fillStyle = "red";
-            ctx.fillRect(food.x, food.y, box, box);
+            ctx.fillRect(“🍓”,food.x, food.y, box, box);
 
             // 4. 蛇头移动走位
             let snakeX = snake[0].x;
