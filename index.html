@@ -130,11 +130,13 @@
             if (d === "RIGHT") snakeX += box;
             if (d === "DOWN") snakeY += box;
 
-            // 穿墙
-            if (snakeX < 0) snakeX = canvas.width - box;
-            if (snakeX >= canvas.width) snakeX = 0;
-            if (snakeY < 0) snakeY = canvas.height - box;
-            if (snakeY >= canvas.height) snakeY = 0;
+            // 撞墙就死（游戏结束并重新开始）
+            if (snakeX < 0 || snakeX >= canvas.width || snakeY < 0 || snakeY >= canvas.height) {
+            alert("Game over");
+            // 重新初始化蛇和位置
+            snake = [{ x: 8 * box, y: 8 * box }];
+            d = "RIGHT";
+             return}
 
             let newHead = { x: snakeX, y: snakeY };
 
@@ -150,7 +152,7 @@
             snake.unshift(newHead);
         }
 
-        setInterval(draw, 230); // 稍微减慢一点速度，玩起来更舒服
+        setInterval(draw, 200); // 稍微减慢一点速度，玩起来更舒服
     </script>
 </body>
 </html>
