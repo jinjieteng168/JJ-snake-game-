@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iPad 贪吃蛇</title>
+    <style>
+        body {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        canvas {
+            background-color: #000;
+            border: 4px solid #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.2);
+            max-width: 90vw;
+            max-height: 50vh;
+        }
+        .controls {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 80px);
+            grid-template-rows: repeat(2, 80px);
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            width: 80px;
+            height: 80px;
+            font-size: 28px;
+            background-color: #444;
+            color: white;
+            border: 2px solid #666;
+            border-radius: 15px;
+            active-background-color: #666;
+        }
+        button:active {
+            background-color: #888;
+        }
+        .up { grid-column: 2; grid-row: 1; }
+        .left { grid-column: 1; grid-row: 2; }
+        .down { grid-column: 2; grid-row: 2; }
+        .right { grid-column: 3; grid-row: 2; }
+    </style>
+</head>
+<body>
+
+    <h2>iPad 贪吃蛇游戏</h2>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+    <div class="controls">
+        <button class="up" onclick="changeDirection('UP')">↑</button>
+        <button class="left" onclick="changeDirection('LEFT')">←</button>
+        <button class="down" onclick="changeDirection('DOWN')">↓</button>
+        <button class="right" onclick="changeDirection('RIGHT')">→</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const box = 20;
+        let snake = [{ x: 10 * box, y: 10 * box }];
+        let d = "RIGHT";
+
+        // 随机生成食物
+        let food = {
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box
+        };
+
+        // 按钮控制方向
+        function changeDirection(dir) {
+            if (dir === "LEFT" && d !== "RIGHT") d = "LEFT";
+            if (dir === "UP" && d !== "DOWN") d = "UP";
+            if (dir === "RIGHT" && d !== "LEFT") d = "RIGHT";
+            if (dir === "DOWN" && d !== "UP") d = "DOWN";
+        }
+
+        // 游戏主循环
+        function draw() {
+            // 1. 刷黑画布
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 2. 画出绿色的蛇
+            for (let i = 0; i < snake.length; i++) {
+                ctx.fillStyle = "lime";
+                ctx.fillRect(snake[i].x, snake[i].y, box, box);
+                ctx.strokeStyle = "black";
+                ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+            }
+
+            // 3. 画出红色的食物
+            ctx.fillStyle = "red";
+            ctx.fillRect(food.x, food.y, box, box);
+
+            // 4. 蛇头移动走位
+            let snakeX = snake[0].x;
+            let snakeY = snake[0].y;
+
+            if (d === "LEFT") snakeX -= box;
+            if (d === "UP") snakeY -= box;
+            if (d === "RIGHT") snakeX += box;
+            if (d === "DOWN") snakeY += box;
+
+            // 5. 穿墙处理（免得一撞墙就死，方便iPad测试）
+            if (snakeX < 0) snakeX = canvas.width - box;
+            if (snakeX >= canvas.width) snakeX = 0;
+            if (snakeY < 0) snakeY = canvas.height - box;
+            if (snakeY >= canvas.height) snakeY = 0;
+
+            let newHead = { x: snakeX, y: snakeY };
+
+            // 6. 判断是否吃到食物
+            if (snakeX === food.x && snakeY === food.y) {
+                food = {
+                    x: Math.floor(Math.random() * 20) * box,
+                    y: Math.floor(Math.random() * 20) * box
+                };
+            } else {
+                snake.pop(); // 没吃到食物就减去尾巴
+            }
+
+            snake.unshift(newHead);
+        }
+
+        // 每 150 毫秒刷新一次画面（控制蛇的速度）
+        setInterval(draw, 150);
+    </script>
+</body>
+</html>
